@@ -18,5 +18,5 @@ func _process(delta: float):
 
 func _physics_process(delta: float):
 	._physics_process(delta)
-	$wheel_fl/wheel_body.rotation.y = steer_angle
-	$wheel_fr/wheel_body.rotation.y = steer_angle
+	$wheel_fl.rotation.y = steer_angle
+	$wheel_fr.rotation.y = steer_angle

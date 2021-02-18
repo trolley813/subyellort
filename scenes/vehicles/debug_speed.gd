@@ -15,6 +15,16 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	var trolleybus: Trolleybus = get_parent()
-	var velocity = (trolleybus.translation - last_pos) / delta
-	text = "V: %s" % (velocity.length() * 3.6) # in KPH
-	last_pos = trolleybus.translation
+	var curr_pos = trolleybus.translation
+	var height = trolleybus.to_global(curr_pos).y
+	var velocity = (curr_pos - last_pos) / delta
+	var azimuth = fposmod(-trolleybus.rotation_degrees.y + 180.0, 360.0)
+	text = "Speed: %6.2f km/h\nAzimuth: %5.1f° (%s)\nHeight: %3.1f m\n Steer angle: %4.1d" % \
+		[velocity.length() * 3.6, azimuth, cardinal_direction(azimuth), height, trolleybus.steer_angle]
+	last_pos = curr_pos
+
+# Get cardinal direction by azimuth in degrees
+func cardinal_direction(degrees: float) -> float:
+	var DIRECTIONS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+	var index = int(fposmod(degrees + 22.5, 360.0) / 45.0)
+	return DIRECTIONS[index]
