@@ -23,33 +23,33 @@ var _cam : ClippedCamera
 var _cur_zoom : float = 0.0
 
 func _ready() -> void:
-	# Setup node references
-	_cam_target = get_node(target)
-	_cam = $camera
-	
-	# Setup camera position in rig
-	_cam.translate(Vector3(0,cam_y_offset,max_zoom))
-	_cur_zoom = max_zoom
+    # Setup node references
+    _cam_target = get_node(target)
+    _cam = $camera
+
+    # Setup camera position in rig
+    _cam.translate(Vector3(0,cam_y_offset,max_zoom))
+    _cur_zoom = max_zoom
 
 func _input(event) -> void:
-	if event is InputEventMouseMotion:
-		# Rotate the rig around the target
-		rotate_y(-event.relative.x * horizontal_sensitivity)
-		rotation.x = clamp(rotation.x - event.relative.y * vertical_sensitivity, deg2rad(min_pitch), deg2rad(max_pitch))
-		orthonormalize()
-		
-	if event is InputEventMouseButton:
-		# Change zoom level on mouse wheel rotation
-		if event.is_pressed():
-			if event.button_index == BUTTON_WHEEL_UP and _cur_zoom > min_zoom:
-				_cur_zoom -= zoom_step
-				cam_y_offset -= zoom_y_step
-			if event.button_index == BUTTON_WHEEL_DOWN and _cur_zoom < max_zoom:
-				_cur_zoom += zoom_step
-				cam_y_offset += zoom_y_step
+    if event is InputEventMouseMotion:
+        # Rotate the rig around the target
+        rotate_y(-event.relative.x * horizontal_sensitivity)
+        rotation.x = clamp(rotation.x - event.relative.y * vertical_sensitivity, deg2rad(min_pitch), deg2rad(max_pitch))
+        orthonormalize()
+
+    if event is InputEventMouseButton:
+        # Change zoom level on mouse wheel rotation
+        if event.is_pressed():
+            if event.button_index == BUTTON_WHEEL_UP and _cur_zoom > min_zoom:
+                _cur_zoom -= zoom_step
+                cam_y_offset -= zoom_y_step
+            if event.button_index == BUTTON_WHEEL_DOWN and _cur_zoom < max_zoom:
+                _cur_zoom += zoom_step
+                cam_y_offset += zoom_y_step
 
 func _process(delta) -> void:
-	# zoom the camera accordingly
-	_cam.set_translation(_cam.translation.linear_interpolate(Vector3(0,cam_y_offset,_cur_zoom),delta * cam_lerp_speed))
-	# set the position of the rig to follow the target
-	set_translation(_cam_target.global_transform.origin)
+    # zoom the camera accordingly
+    _cam.set_translation(_cam.translation.linear_interpolate(Vector3(0,cam_y_offset,_cur_zoom),delta * cam_lerp_speed))
+    # set the position of the rig to follow the target
+    set_translation(_cam_target.global_transform.origin)
