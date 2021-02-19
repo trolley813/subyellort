@@ -56,8 +56,10 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0 )
 shape = SubResource( 2 )
 
 [node name="wheel_fl" type="VehicleWheel" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0.5, 3.5 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0.4, 3.5 )
 use_as_steering = true
+suspension_stiffness = 100.0
+suspension_max_force = 20000.0
 
 [node name="wheel_body" type="CSGCylinder" parent="wheel_fl"]
 transform = Transform( -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0, 1, 0, 0, 0 )
@@ -66,8 +68,10 @@ height = 0.3
 sides = 16
 
 [node name="wheel_fr" type="VehicleWheel" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0.5, 3.5 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0.4, 3.5 )
 use_as_steering = true
+suspension_stiffness = 100.0
+suspension_max_force = 20000.0
 
 [node name="wheel_body" type="CSGCylinder" parent="wheel_fr"]
 transform = Transform( -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0, 1, 0, 0, 0 )
@@ -76,8 +80,10 @@ height = 0.3
 sides = 16
 
 [node name="wheel_rl" type="VehicleWheel" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0.5, -3.5 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 0.4, -3.5 )
 use_as_traction = true
+suspension_stiffness = 100.0
+suspension_max_force = 20000.0
 
 [node name="wheel_body" type="CSGCylinder" parent="wheel_rl"]
 transform = Transform( -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0, 1, 0, 0, 0 )
@@ -86,8 +92,10 @@ height = 0.3
 sides = 16
 
 [node name="wheel_rr" type="VehicleWheel" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0.5, -3.5 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 0.4, -3.5 )
 use_as_traction = true
+suspension_stiffness = 100.0
+suspension_max_force = 20000.0
 
 [node name="wheel_body" type="CSGCylinder" parent="wheel_rr"]
 transform = Transform( -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0, 0, 1, 0, 0, 0 )
