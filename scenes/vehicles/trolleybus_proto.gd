@@ -8,6 +8,8 @@ extends Trolleybus
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var grc_positions = {
+		-2: GRCPositionInfo.new(1.85, 48, 0),
+		-1: GRCPositionInfo.new(1.85, 0, 0),
 		0: GRCPositionInfo.new(1.85, 0, 0),
 		1: GRCPositionInfo.new(4.308, 48, 1),
 		2: GRCPositionInfo.new(3.308, 48, 1),
@@ -29,9 +31,9 @@ func _ready():
 		18: GRCPositionInfo.new(0, 668, 0.31),
 	}
 	var ctrl_positions = {
-		ControllerPosition.BRAKE_3: ControllerPositionInfo.new(1, 150, true),
-		ControllerPosition.BRAKE_2: ControllerPositionInfo.new(1, 150, false),
-		ControllerPosition.BRAKE_1: ControllerPositionInfo.new(1, 150, false),
+		ControllerPosition.BRAKE_3: ControllerPositionInfo.new(-2, 150, true),
+		ControllerPosition.BRAKE_2: ControllerPositionInfo.new(-2, 150, false),
+		ControllerPosition.BRAKE_1: ControllerPositionInfo.new(-1, 150, false),
 		ControllerPosition.NEUTRAL: ControllerPositionInfo.new(1, 0, false),
 		ControllerPosition.MANEUVER: ControllerPositionInfo.new(1, 150, false),
 		ControllerPosition.RUNNING_1: ControllerPositionInfo.new(15, 250, false),
@@ -50,6 +52,7 @@ func _ready():
 		* engine_info.conductors_count
 		/ (60.0 * engine_info.branch_count)
 	)
+	wheel_radius = $wheel_rr/collision.shape.radius
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -58,9 +61,8 @@ func _process(delta: float):
 
 
 func _physics_process(delta: float):
+	wheel_rpm = $wheel_rr.angular_velocity.length() * 30 / PI
 	._physics_process(delta)
-	$wheel_fl.rotation.y = steer_angle
-	$wheel_fr.rotation.y = steer_angle
 
 
 func _get_controller_pos(throttle_input: float, brake_input: float):

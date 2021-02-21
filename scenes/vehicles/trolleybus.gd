@@ -1,5 +1,5 @@
 class_name Trolleybus
-extends VehicleBody
+extends RigidBody
 
 
 class GRCPositionInfo:
@@ -50,8 +50,12 @@ enum ControllerPosition {
 
 enum ReverserPosition { BACKWARD = -1, NEUTRAL = 0, FORWARD = 1 }
 
+export (Array, NodePath) var steer_wheels
+export (Array, NodePath) var traction_wheels
+
 export var max_steer_angle = 45.0
-export var wheel_radius = 0.5
+var wheel_radius = 0.5
+var wheel_rpm = 0.0
 export var grc_switch_time = 0.2
 var steer_angle = 0.0
 var controller_pos = ControllerPosition.NEUTRAL
@@ -66,6 +70,8 @@ var time_to_grc_switch = 0.0
 var c_m: float
 var c_n: float
 var grc_is_switching: bool = false
+var driving_force: float
+var brake_force: float
 
 
 # Called when the node enters the scene tree for the first time.
@@ -92,9 +98,9 @@ func _physics_process(delta):
 	var grc_pos_info: GRCPositionInfo = engine_info.grc_positions[grc_pos]
 	var ctrl_pos_info: ControllerPositionInfo = engine_info.ctrl_positions[controller_pos]
 	var voltage = 550 if grc_pos >= 0 else 0
-	speed = linear_velocity.length()
-	engine_rpm = speed * 30 / (PI * wheel_radius) * engine_info.gear_ratio
-	var flux = 0.06 #0.5 * (atan(0.01 * arm_current) + 0.03 * PI)
+	speed = transform.basis.xform_inv(linear_velocity).z
+	engine_rpm = wheel_rpm * engine_info.gear_ratio
+	var flux = 0.04  #0.02 * (atan(0.01 * arm_current) + 0.5 * PI)
 	emf = voltage - c_n * abs(engine_rpm) * flux * grc_pos_info.field_weakening
 	arm_current = clamp(
 		emf / (engine_info.engine_resistance + grc_pos_info.armature_resistance), -500, 500
@@ -119,13 +125,23 @@ func _physics_process(delta):
 	if ctrl_pos_info.max_grc_pos < 0:
 		grc_pos = ctrl_pos_info.max_grc_pos
 	if ctrl_pos_info.is_pneumatic_brake:
-		engine_force = 0
-		brake = 100
+		driving_force = 0
+		brake_force = 1000
+		for w in traction_wheels + steer_wheels:
+			var wheel: RigidBody = get_node(w)
+			var torque = wheel.transform.basis.x * -brake_force
+			wheel.add_torque(torque)
 	else:
-		engine_force = 0.09 * c_n * arm_current * flux * reverser_pos * engine_rpm
-		brake = 0
-	steer_angle = max_steer_angle * steer_val
-	steering = move_toward(steering, deg2rad(steer_angle), delta)
+		driving_force = 0.9 * c_n * arm_current * reverser_pos
+		brake_force = 0
+	for w in traction_wheels:
+		var wheel: RigidBody = get_node(w)
+		var torque = transform.basis.x * driving_force
+		wheel.add_torque(torque)
+	steer_angle = move_toward(steer_angle, max_steer_angle * steer_val, delta * 20.0)
+	for w in steer_wheels:
+		var wheel: RigidBody = get_node(w)
+		wheel.rotation_degrees.y = steer_angle
 
 
 func _get_controller_pos(throttle_input: float, brake_input: float):
