@@ -1,31 +1,177 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=11 format=2]
 
-[ext_resource path="res://scenes/vehicles/trolleybus_proto.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/maps/test_polygon/test_polygon_spawner_manager.gd" type="Script" id=1]
 [ext_resource path="res://scenes/misc/orbit_camera.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/misc/test_checkerboard.png" type="Texture" id=3]
+[ext_resource path="res://scenes/misc/vehicle_spawner.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/maps/test_polygon.gd" type="Script" id=5]
 
-[sub_resource type="PlaneShape" id=1]
+[sub_resource type="PhysicsMaterial" id=1]
+
+[sub_resource type="PlaneShape" id=2]
 
 [sub_resource type="SpatialMaterial" id=3]
 albedo_texture = ExtResource( 3 )
 uv1_scale = Vector3( 32, 32, 32 )
 
+[sub_resource type="BoxShape" id=4]
+extents = Vector3( 8, 0.25, 300 )
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 6, 6, 17 )
+
 [node name="test_polygon" type="Spatial"]
-
-[node name="trolleybus_proto" parent="." instance=ExtResource( 1 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 18, 0 )
-
-[node name="orbit_camera" parent="." instance=ExtResource( 2 )]
-transform = Transform( -1, 0, -3.25841e-07, 0, 1, 0, 3.25841e-07, 0, -1, 0, 0, 0 )
-target = NodePath("../trolleybus_proto")
+script = ExtResource( 5 )
 
 [node name="plane" type="StaticBody" parent="."]
+physics_material_override = SubResource( 1 )
 
-[node name="CollisionShape" type="CollisionShape" parent="plane"]
-shape = SubResource( 1 )
+[node name="collision" type="CollisionShape" parent="plane"]
+shape = SubResource( 2 )
 
-[node name="CSGBox" type="CSGBox" parent="plane"]
+[node name="geometry" type="CSGBox" parent="plane"]
 width = 1000.0
 height = 0.001
 depth = 1000.0
 material = SubResource( 3 )
+
+[node name="road_1" type="StaticBody" parent="."]
+
+[node name="geometry" type="CSGBox" parent="road_1"]
+width = 16.0
+height = 0.5
+depth = 600.0
+
+[node name="collision" type="CollisionShape" parent="road_1"]
+shape = SubResource( 4 )
+
+[node name="road_2" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -300, 0, 0 )
+
+[node name="geometry" type="CSGBox" parent="road_2"]
+width = 16.0
+height = 0.5
+depth = 600.0
+
+[node name="collision" type="CollisionShape" parent="road_2"]
+shape = SubResource( 4 )
+
+[node name="road_3" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 300, 0, 0 )
+
+[node name="geometry" type="CSGBox" parent="road_3"]
+width = 16.0
+height = 0.5
+depth = 600.0
+
+[node name="collision" type="CollisionShape" parent="road_3"]
+shape = SubResource( 4 )
+
+[node name="road_4" type="StaticBody" parent="."]
+transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0 )
+
+[node name="geometry" type="CSGBox" parent="road_4"]
+width = 16.0
+height = 0.5
+depth = 600.0
+
+[node name="collision" type="CollisionShape" parent="road_4"]
+shape = SubResource( 4 )
+
+[node name="road_5" type="StaticBody" parent="."]
+transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 300 )
+
+[node name="geometry" type="CSGBox" parent="road_5"]
+width = 16.0
+height = 0.5
+depth = 600.0
+
+[node name="collision" type="CollisionShape" parent="road_5"]
+shape = SubResource( 4 )
+
+[node name="road_6" type="StaticBody" parent="."]
+transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, -300 )
+
+[node name="geometry" type="CSGBox" parent="road_6"]
+width = 16.0
+height = 0.5
+depth = 600.0
+
+[node name="collision" type="CollisionShape" parent="road_6"]
+shape = SubResource( 4 )
+
+[node name="house_1" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 6, -28 )
+
+[node name="geometry" type="CSGBox" parent="house_1"]
+width = 12.0
+height = 12.0
+depth = 34.0
+
+[node name="CollisionShape" type="CollisionShape" parent="house_1"]
+shape = SubResource( 5 )
+
+[node name="house_2" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 6, 28 )
+
+[node name="geometry" type="CSGBox" parent="house_2"]
+width = 12.0
+height = 12.0
+depth = 34.0
+
+[node name="CollisionShape" type="CollisionShape" parent="house_2"]
+shape = SubResource( 5 )
+
+[node name="house_3" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 6, -28 )
+
+[node name="geometry" type="CSGBox" parent="house_3"]
+width = 12.0
+height = 12.0
+depth = 34.0
+
+[node name="CollisionShape" type="CollisionShape" parent="house_3"]
+shape = SubResource( 5 )
+
+[node name="house_4" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 6, 28 )
+
+[node name="geometry" type="CSGBox" parent="house_4"]
+width = 12.0
+height = 12.0
+depth = 34.0
+
+[node name="CollisionShape" type="CollisionShape" parent="house_4"]
+shape = SubResource( 5 )
+
+[node name="orbit_camera" parent="." instance=ExtResource( 2 )]
+transform = Transform( -1, 0, -3.25841e-07, 0, 1, 0, 3.25841e-07, 0, -1, 0, 0, 0 )
+max_pitch = 60.0
+min_pitch = -60.0
+vertical_sensitivity = 0.005
+horizontal_sensitivity = 0.005
+target = NodePath("../plane")
+
+[node name="vehicle_spawner_user" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+spawner_manager_path = NodePath("../spawner_manager")
+user_controllable = true
+
+[node name="vehicle_spawner_other1" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 20 )
+spawner_manager_path = NodePath("../spawner_manager")
+
+[node name="vehicle_spawner_other2" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 40 )
+spawner_manager_path = NodePath("../spawner_manager")
+
+[node name="vehicle_spawner_other3" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -20 )
+spawner_manager_path = NodePath("../spawner_manager")
+
+[node name="vehicle_spawner_other4" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -40 )
+spawner_manager_path = NodePath("../spawner_manager")
+
+[node name="spawner_manager" type="Node" parent="."]
+script = ExtResource( 1 )

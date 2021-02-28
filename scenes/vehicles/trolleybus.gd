@@ -1,5 +1,5 @@
 class_name Trolleybus
-extends RigidBody
+extends TransportVehicle
 
 
 class GRCPositionInfo:
@@ -52,8 +52,8 @@ enum ReverserPosition { BACKWARD = -1, NEUTRAL = 0, FORWARD = 1 }
 
 export (Array, NodePath) var steer_wheels
 export (Array, NodePath) var traction_wheels
-
 export var max_steer_angle = 45.0
+
 var wheel_radius = 0.5
 var wheel_rpm = 0.0
 export var grc_switch_time = 0.2
@@ -81,19 +81,24 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_just_pressed("vehicle_reverser_increase"):
-		reverser_pos = clamp(reverser_pos + 1, ReverserPosition.BACKWARD, ReverserPosition.FORWARD)
-	if Input.is_action_just_pressed("vehicle_reverser_decrease"):
-		reverser_pos = clamp(reverser_pos - 1, ReverserPosition.BACKWARD, ReverserPosition.FORWARD)
+	if user_controlled:
+		if Input.is_action_just_pressed("vehicle_reverser_increase"):
+			reverser_pos = clamp(reverser_pos + 1, ReverserPosition.BACKWARD, ReverserPosition.FORWARD)
+		if Input.is_action_just_pressed("vehicle_reverser_decrease"):
+			reverser_pos = clamp(reverser_pos - 1, ReverserPosition.BACKWARD, ReverserPosition.FORWARD)
 
 
 func _physics_process(delta):
-	var steer_val = (
-		Input.get_action_strength("vehicle_steer_left")
-		- Input.get_action_strength("vehicle_steer_right")
-	)
-	var throttle_val = Input.get_action_strength("vehicle_throttle")
-	var brake_val = Input.get_action_strength("vehicle_brake")
+	var steer_val = 0
+	var throttle_val = 0
+	var brake_val = 0
+	if user_controlled:
+		steer_val = (
+			Input.get_action_strength("vehicle_steer_left")
+			- Input.get_action_strength("vehicle_steer_right")
+		)
+		throttle_val = Input.get_action_strength("vehicle_throttle")
+		brake_val = Input.get_action_strength("vehicle_brake")
 	controller_pos = _get_controller_pos(throttle_val, brake_val)
 	var grc_pos_info: GRCPositionInfo = engine_info.grc_positions[grc_pos]
 	var ctrl_pos_info: ControllerPositionInfo = engine_info.ctrl_positions[controller_pos]
@@ -126,10 +131,10 @@ func _physics_process(delta):
 		grc_pos = ctrl_pos_info.max_grc_pos
 	if ctrl_pos_info.is_pneumatic_brake:
 		driving_force = 0
-		brake_force = 1000
+		brake_force = 10000
 		for w in traction_wheels + steer_wheels:
 			var wheel: RigidBody = get_node(w)
-			var torque = wheel.transform.basis.x * -brake_force
+			var torque = transform.basis.x * -brake_force * sign(speed)
 			wheel.add_torque(torque)
 	else:
 		driving_force = 0.9 * c_n * arm_current * reverser_pos

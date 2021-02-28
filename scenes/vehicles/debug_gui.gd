@@ -43,8 +43,8 @@ func _process(delta):
 	var azimuth = fposmod(-trolleybus.rotation_degrees.y + 180.0, 360.0)
 	var rev_pos = trolleybus.reverser_pos
 	$info/coord_label.text = (
-		"Azimuth: %5.1f° (%s)\nHeight: %3.1f m"
-		% [azimuth, cardinal_direction(azimuth), height]
+		"Vehicle ID: %s\nAzimuth: %5.1f° (%s)\nHeight: %3.1f m"
+		% [trolleybus.vehicle_id, azimuth, cardinal_direction(azimuth), height]
 	)
 	$info/speed_label.text = (
 		"Speed: %5.1f km/h\nRPM: %4.0f"

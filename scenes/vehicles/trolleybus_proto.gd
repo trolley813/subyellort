@@ -1,3 +1,4 @@
+class_name TrolleybusProto
 extends Trolleybus
 
 # Declare member variables here. Examples:
@@ -53,6 +54,9 @@ func _ready():
 		/ (60.0 * engine_info.branch_count)
 	)
 	wheel_radius = $wheel_rr/collision.shape.radius
+	$id_label_front.text = vehicle_id
+	$id_label_rear.text = vehicle_id
+	$debug_gui.visible = user_controlled
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -82,3 +86,7 @@ func _get_controller_pos(throttle_input: float, brake_input: float):
 		return ControllerPosition.MANEUVER
 	else:
 		return ControllerPosition.NEUTRAL
+
+
+func _on_trolleybus_user_control_toggled(value: bool) -> void:
+	$debug_gui.visible = value

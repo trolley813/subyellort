@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Reference",
+"class": "ArrayUtils",
+"language": "GDScript",
+"path": "res://addons/SIsilicon.3d.text/array_utils.gd"
+}, {
 "base": "EditorVCSInterface",
 "class": "GitAPI",
 "language": "NativeScript",
@@ -29,17 +34,42 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scenes/misc/orbit_camera.gd"
 }, {
+"base": "Node",
+"class": "SpawnerManager",
+"language": "GDScript",
+"path": "res://scripts/spawner_manager.gd"
+}, {
 "base": "RigidBody",
+"class": "TransportVehicle",
+"language": "GDScript",
+"path": "res://scripts/transport_vehicle.gd"
+}, {
+"base": "TransportVehicle",
 "class": "Trolleybus",
 "language": "GDScript",
 "path": "res://scenes/vehicles/trolleybus.gd"
+}, {
+"base": "Trolleybus",
+"class": "TrolleybusProto",
+"language": "GDScript",
+"path": "res://scenes/vehicles/trolleybus_proto.gd"
+}, {
+"base": "Spatial",
+"class": "VehicleSpawner",
+"language": "GDScript",
+"path": "res://scenes/misc/vehicle_spawner.gd"
 } ]
 _global_script_class_icons={
+"ArrayUtils": "",
 "GitAPI": "",
 "HTerrainDataLoader": "",
 "HTerrainDataSaver": "",
 "OrbitCamera": "",
-"Trolleybus": ""
+"SpawnerManager": "",
+"TransportVehicle": "",
+"Trolleybus": "",
+"TrolleybusProto": "",
+"VehicleSpawner": ""
 }
 
 [application]
@@ -48,9 +78,13 @@ config/name="Subyellort"
 run/main_scene="res://scenes/maps/test_polygon.tscn"
 config/icon="res://icon.png"
 
+[debug]
+
+settings/fps/force_fps=60
+
 [editor_plugins]
 
-enabled=PoolStringArray( "zylann.hterrain" )
+enabled=PoolStringArray( "SIsilicon.3d.text", "zylann.hterrain" )
 
 [gdnative]
 
@@ -92,6 +126,14 @@ vehicle_reverser_decrease={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777234,"unicode":0,"echo":false,"script":null)
  ]
 }
+
+[node]
+
+name_casing=2
+
+[physics]
+
+common/physics_fps=120
 
 [rendering]
 

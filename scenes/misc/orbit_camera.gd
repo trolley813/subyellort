@@ -63,3 +63,6 @@ func _process(delta) -> void:
 	)
 	# set the position of the rig to follow the target
 	set_translation(_cam_target.global_transform.origin)
+
+func set_target(target: Spatial):
+	_cam_target = target
