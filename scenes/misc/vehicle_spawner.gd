@@ -14,7 +14,7 @@ var spawned_instance: TransportVehicle
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var spawner_manager: SpawnerManager = get_node(spawner_manager_path)
-	yield(spawner_manager, "ready")
+	#yield(spawner_manager, "ready")
 	var scene_node = get_tree().get_root().get_child(0)
 	var id_and_vehicle = spawner_manager.get_random_vehicle()
 	var id: String = id_and_vehicle[0]

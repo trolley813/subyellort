@@ -14,7 +14,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/SIsilicon.3d.text/array_utils.gd"
 }, {
-"base": "EditorVCSInterface",
+"base": "",
 "class": "GitAPI",
 "language": "NativeScript",
 "path": "res://git_api.gdns"
@@ -75,7 +75,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Subyellort"
-run/main_scene="res://scenes/maps/test_polygon.tscn"
+run/main_scene="res://scenes/maps/kazan.tscn"
 config/icon="res://icon.png"
 
 [debug]

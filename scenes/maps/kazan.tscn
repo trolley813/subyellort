@@ -1,0 +1,43 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://scenes/maps/kazan/kazan_osm_flip.jpg" type="Texture" id=1]
+[ext_resource path="res://scenes/maps/kazan_spawner_manager.gd" type="Script" id=2]
+[ext_resource path="res://scenes/misc/orbit_camera.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/maps/kazan.gd" type="Script" id=4]
+[ext_resource path="res://scenes/misc/vehicle_spawner.tscn" type="PackedScene" id=5]
+
+[sub_resource type="PhysicsMaterial" id=1]
+friction = 0.95
+
+[sub_resource type="SpatialMaterial" id=2]
+flags_unshaded = true
+albedo_texture = ExtResource( 1 )
+
+[sub_resource type="PlaneShape" id=3]
+
+[node name="kazan" type="Spatial"]
+script = ExtResource( 4 )
+
+[node name="terrain" type="StaticBody" parent="."]
+physics_material_override = SubResource( 1 )
+
+[node name="csg_box" type="CSGBox" parent="terrain"]
+transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 0, 0, 0 )
+width = 20480.0
+height = 0.01
+depth = 20480.0
+material = SubResource( 2 )
+
+[node name="collision_shape" type="CollisionShape" parent="terrain"]
+shape = SubResource( 3 )
+
+[node name="spawner_manager" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="vehicle_spawner_user" parent="." instance=ExtResource( 5 )]
+transform = Transform( -0.139173, 0, 0.990268, 0, 1, 0, -0.990268, 0, -0.139173, 2784, 1, 4947 )
+spawner_manager_path = NodePath("../spawner_manager")
+user_controllable = true
+
+[node name="orbit_camera" parent="." instance=ExtResource( 3 )]
+target = NodePath("../vehicle_spawner_user")
