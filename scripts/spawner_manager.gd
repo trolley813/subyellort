@@ -5,8 +5,10 @@ var available_vehicles = {}
 var spawned_vehicles = {}
 var rng = RandomNumberGenerator.new()
 
+
 func _ready() -> void:
 	rng.randomize()
+
 
 func get_random_vehicle():
 	var keys = available_vehicles.keys()

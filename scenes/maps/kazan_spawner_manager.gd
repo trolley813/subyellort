@@ -1,6 +1,5 @@
 extends SpawnerManager
 
-
 # Declare member variables here. Examples:
 # var a: int = 2
 # var b: String = "text"
@@ -12,8 +11,6 @@ func _ready() -> void:
 		available_vehicles[str(i)] = preload("res://scenes/vehicles/trolleybus_proto.tscn")
 	for i in range(2115, 2141) + range(2217, 2243):
 		available_vehicles[str(i)] = preload("res://scenes/vehicles/trolleybus_proto.tscn")
-
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:

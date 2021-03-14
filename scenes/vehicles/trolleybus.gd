@@ -50,6 +50,7 @@ enum ControllerPosition {
 
 enum ReverserPosition { BACKWARD = -1, NEUTRAL = 0, FORWARD = 1 }
 
+export (NodePath) var hull
 export (Array, NodePath) var steer_wheels
 export (Array, NodePath) var traction_wheels
 export var max_steer_angle = 45.0
@@ -72,10 +73,12 @@ var c_n: float
 var grc_is_switching: bool = false
 var driving_force: float
 var brake_force: float
+var hull_body: RigidBody
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	hull_body = get_node(hull)
 	pass  # Replace with function body.
 
 
@@ -83,9 +86,13 @@ func _ready():
 func _process(delta):
 	if user_controlled:
 		if Input.is_action_just_pressed("vehicle_reverser_increase"):
-			reverser_pos = clamp(reverser_pos + 1, ReverserPosition.BACKWARD, ReverserPosition.FORWARD)
+			reverser_pos = clamp(
+				reverser_pos + 1, ReverserPosition.BACKWARD, ReverserPosition.FORWARD
+			)
 		if Input.is_action_just_pressed("vehicle_reverser_decrease"):
-			reverser_pos = clamp(reverser_pos - 1, ReverserPosition.BACKWARD, ReverserPosition.FORWARD)
+			reverser_pos = clamp(
+				reverser_pos - 1, ReverserPosition.BACKWARD, ReverserPosition.FORWARD
+			)
 
 
 func _physics_process(delta):
@@ -103,8 +110,8 @@ func _physics_process(delta):
 	var grc_pos_info: GRCPositionInfo = engine_info.grc_positions[grc_pos]
 	var ctrl_pos_info: ControllerPositionInfo = engine_info.ctrl_positions[controller_pos]
 	var voltage = 550 if grc_pos >= 0 else 0
-	speed = transform.basis.xform_inv(linear_velocity).z
-	engine_rpm = wheel_rpm * engine_info.gear_ratio
+	speed = hull_body.global_transform.basis.xform_inv(hull_body.linear_velocity).z
+	engine_rpm = wheel_rpm * engine_info.gear_ratio * reverser_pos
 	var flux = 0.04  #0.02 * (atan(0.01 * arm_current) + 0.5 * PI)
 	emf = voltage - c_n * abs(engine_rpm) * flux * grc_pos_info.field_weakening
 	arm_current = clamp(
@@ -134,19 +141,28 @@ func _physics_process(delta):
 		brake_force = 10000
 		for w in traction_wheels + steer_wheels:
 			var wheel: RigidBody = get_node(w)
-			var torque = transform.basis.x * -brake_force * sign(speed)
+			var torque = hull_body.global_transform.basis.x * -brake_force * sign(wheel_rpm)
 			wheel.add_torque(torque)
 	else:
-		driving_force = 0.9 * c_n * arm_current * reverser_pos
+		driving_force = 3.0 * c_n * arm_current * reverser_pos * sign(grc_pos)
 		brake_force = 0
-	for w in traction_wheels:
-		var wheel: RigidBody = get_node(w)
-		var torque = transform.basis.x * driving_force
-		wheel.add_torque(torque)
+		for w in traction_wheels:
+			var wheel: RigidBody = get_node(w)
+			var torque = hull_body.global_transform.basis.x * driving_force
+			wheel.add_torque(torque)
 	steer_angle = move_toward(steer_angle, max_steer_angle * steer_val, delta * 20.0)
 	for w in steer_wheels:
 		var wheel: RigidBody = get_node(w)
-		wheel.rotation_degrees.y = steer_angle
+		var wheel_relative_transform = (
+			hull_body.global_transform.basis.inverse()
+			* wheel.global_transform.basis
+		)
+		var wheel_rot = rad2deg(wheel_relative_transform.get_euler().y)
+		if abs(wheel_rot) > 90.0:
+			wheel_rot -= 180.0 * sign(wheel_rot)
+		var error = steer_angle - wheel_rot
+		wheel.add_torque(10.0 * hull_body.transform.basis.y * pow(error * 0.2, 3.0))
+		#wheel.rotation_degrees.y = steer_angle
 
 
 func _get_controller_pos(throttle_input: float, brake_input: float):

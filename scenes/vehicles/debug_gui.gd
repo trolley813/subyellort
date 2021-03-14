@@ -39,9 +39,9 @@ func _process(delta):
 		return
 	_update_counter = 0
 	var trolleybus: Trolleybus = get_parent()
-	var height = trolleybus.to_global(trolleybus.translation).y
-	var azimuth = fposmod(-trolleybus.rotation_degrees.y + 180.0, 360.0)
-	var rev_pos = trolleybus.reverser_pos
+	var hull: RigidBody = trolleybus.hull_body
+	var height = trolleybus.to_global(hull.translation).y
+	var azimuth = fposmod(-rad2deg(hull.global_transform.basis.get_euler().y) + 180.0, 360.0)
 	$info/coord_label.text = (
 		"Vehicle ID: %s\nAzimuth: %5.1f° (%s)\nHeight: %3.1f m"
 		% [trolleybus.vehicle_id, azimuth, cardinal_direction(azimuth), height]

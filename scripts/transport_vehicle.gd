@@ -1,5 +1,5 @@
 class_name TransportVehicle
-extends RigidBody
+extends Spatial
 
 signal user_control_toggled
 
@@ -9,7 +9,8 @@ export var user_controlled: bool = false setget set_user_controlled
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	pass  # Replace with function body.
+
 
 func set_user_controlled(value: bool):
 	user_controlled = value

@@ -1,13 +1,12 @@
 class_name VehicleSpawner
 extends Spatial
 
-
 # Declare member variables here. Examples:
 # var a: int = 2
 # var b: String = "text"
 
-export(NodePath) var spawner_manager_path
-export(bool) var user_controllable
+export (NodePath) var spawner_manager_path
+export (bool) var user_controllable
 var spawned_instance: TransportVehicle
 
 
@@ -27,8 +26,6 @@ func _ready() -> void:
 	spawned_instance.user_controlled = user_controllable
 	spawned_instance.transform = self.transform
 	self.visible = false
-
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta: float) -> void:
